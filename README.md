@@ -18,6 +18,8 @@ An independent, reusable technical SEO auditing and bounded site-crawling librar
 
 ## Install and use
 
+PyPI distribution is **not published yet**. Until the first verified release, install from a trusted local checkout as shown below. Maintainers: see [RELEASE.md](RELEASE.md) for the gated PyPI release process.
+
 ```bash
 python -m pip install -e .
 open-seo --file sample.html --base-url https://example.org/ --output report.json
@@ -73,7 +75,7 @@ The URL downloader rejects non-HTTPS endpoints, local/private IP addresses, redi
 1. Add persistent crawl checkpoints, URL canonicalization, richer duplicate-content checks and link graph analysis.
 2. Provide plugin-based analyzers, accessibility metrics and HTML exporter.
 3. Improve SSRF defenses with DNS-pinned transport and configurable crawl budgets.
-4. Add CI, contributor guide, issue templates, and release automation.
+4. Expand CI, issue templates, and release automation after the first gated PyPI release.
 
 ## Contributing
 

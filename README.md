@@ -2,7 +2,7 @@
 
 An independent, reusable technical SEO auditing and bounded site-crawling library written in Python. MIT licensed; no paid SEO data providers, tracking keys, or third-party Python runtime dependencies.
 
-## Capabilities (v0.4)
+## Capabilities (v0.5)
 
 - Inspect page titles and descriptions, H1 headings, canonical URLs and index directives.
 - Detect missing image alt attributes, missing language, Open Graph titles, and malformed JSON-LD.
@@ -14,6 +14,7 @@ An independent, reusable technical SEO auditing and bounded site-crawling librar
 - Export site crawl reports as JSON or CSV.
 - **SEO Glow-Up:** turn one evidence-based audit into three vertical 1080×1920 SVG Reel frames, a 15-second voiceover script, and editable JSON storyboard. Never fabricates rankings or promises traffic gains.
 - **AI Answerability Challenge:** five buyer questions (identity, offer, contact, location, pricing) with exact on-page or JSON-LD evidence, missing-information recommendations and a transparent evidence-coverage metric.
+- **AI Brand Identity Crisis (opt-in):** ask 2–5 explicitly selected OpenAI, Gemini, or Anthropic models the same five brand questions. Compare their responses with first-party HTML/JSON-LD evidence, surface omitted claims, model disagreements and possible conflicts for human review. This uses paid APIs only when explicitly invoked.
 
 ## Install and use
 
@@ -26,6 +27,7 @@ open-seo --crawl https://example.org/ --max-pages 25 --format csv --output audit
 open-seo --file sample.html --base-url https://example.org/ --glowup ./reel-assets
 open-seo --file sample.html --base-url https://example.org/ --answerability --output challenge.json
 open-seo --url https://example.org/ --answerability --output challenge.json
+open-seo --url https://example.org/ --brand-crisis openai:YOUR_MODEL_ID,gemini:YOUR_MODEL_ID --output crisis.json
 python -m unittest discover -s tests -v
 ```
 
@@ -40,6 +42,10 @@ print(report['findings'])
 site_report = crawl_site('https://example.org/', max_pages=10)
 export_glowup(report, './reel-assets')
 challenge = answerability_challenge('<html><title>Example</title></html>', 'https://example.org/')
+
+# Programmatic use with a custom/injected provider callback:
+from open_seo import run_brand_crisis
+# run_brand_crisis(html, url, [('openai', 'selected-model'), ('gemini', 'selected-model')])
 ```
 
 ## Architecture and integration
@@ -53,6 +59,12 @@ This is a **bounded static HTML crawler**, not a browser renderer, ranking track
 Glow-Up outputs **storyboard frames and a script**, not an encoded Instagram video or an Instagram upload. Import the SVG frames into a compatible editor to animate them. The "glow-up" is a list of proposed fixes; the tool never claims those fixes were applied.
 
 AI Answerability Challenge examines only content evidence in the page HTML and JSON-LD. It **does not query ChatGPT, Gemini, Google AI Overviews or other models**, and its coverage percentage does not indicate AI visibility or citation likelihood. Presence of metadata or schema does not prove that a buyer question is correctly answered. Review the extracted evidence manually before acting.
+
+### AI Brand Identity Crisis opt-in and privacy
+
+The Crisis feature **does** call live APIs, but only with `--brand-crisis` or an explicit `run_brand_crisis()` call. Set API keys in `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `ANTHROPIC_API_KEY` as appropriate. Model IDs must be supplied by the operator, because availability and pricing change. The tool makes one call per selected model and can incur provider charges; API calls send the **brand URL**, not the sampled website's HTML. The model is prompted to answer from its existing knowledge without browsing or tools. Results depend on the provider's model and may be outdated or wrong. The official site HTML is compared locally afterwards. **Not verified on sampled page means unknown, not false**; metadata disagreement is only a potential conflict requiring human review. Never treat this as a measurement of how a live search system cites or recommends the brand.
+
+For a real audit, obtain the brand owner's consent when appropriate, review each provider's data-handling policies, and respect the official website's access conditions. The network fetcher still requires hardening before production multi-tenant use.
 
 The URL downloader rejects non-HTTPS endpoints, local/private IP addresses, redirects, and oversized HTML. It nevertheless remains vulnerable to potential DNS rebinding between validation and connection. **Do not expose arbitrary user-supplied URLs via these network functions in a public web service** without network-level egress controls, DNS pinning, and a queue/rate limit. The crawler honors robots.txt disallow rules and fails closed on blocked or unavailable robots policy, but is still not a hardened multi-tenant crawler. Request pacing, sitemap quotas, and robots error semantics should be reviewed for production usage.
 

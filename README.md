@@ -18,6 +18,9 @@ An independent, reusable technical SEO auditing and bounded site-crawling librar
 
 ## Install and use
 
+Until the first PyPI release, install from a local checkout. Afterwards users
+can install the published version with `python -m pip install open-seo-engine`.
+
 ```bash
 python -m pip install -e .
 open-seo --file sample.html --base-url https://example.org/ --output report.json
@@ -78,6 +81,11 @@ The URL downloader rejects non-HTTPS endpoints, local/private IP addresses, redi
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). Automated tests run on multiple Python versions through GitHub Actions once this source is published.
+
+## PyPI release
+
+See [PUBLISHING.md](PUBLISHING.md) for the maintainer-only Trusted Publishing
+setup. Releases are intentionally manual and require PyPI account setup.
 
 ## License
 
